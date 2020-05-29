@@ -5,17 +5,14 @@
 package vmc
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"reflect"
-	"strings"
-
+	"context"
+	"crypto/tls"
+	"encoding/base64"
 	"github.com/vmware/vsphere-automation-sdk-go/runtime/core"
 	"github.com/vmware/vsphere-automation-sdk-go/runtime/protocol/client"
 	"github.com/vmware/vsphere-automation-sdk-go/runtime/security"
+	"gitlab.eng.vmware.com/vapi-sdk/csp-go-openapi-bindings"
+	"net/http"
 )
 
 // NewClientConnectorByRefreshToken returns client connector to any VMC service by using OAuth authentication using Refresh Token.
@@ -27,11 +24,7 @@ func NewClientConnectorByRefreshToken(refreshToken, serviceUrl, cspURL string,
 	}
 
 	if len(cspURL) <= 0 {
-		cspURL = DefaultCSPUrl +
-			CSPRefreshUrlSuffix
-	} else {
-		cspURL = cspURL +
-			CSPRefreshUrlSuffix
+		cspURL = DefaultCSPUrl
 	}
 
 	securityCtx, err := SecurityContextByRefreshToken(refreshToken, cspURL)
@@ -47,40 +40,89 @@ func NewClientConnectorByRefreshToken(refreshToken, serviceUrl, cspURL string,
 
 // SecurityContextByRefreshToken returns Security Context with access token that is received from Cloud Service Provider using Refresh Token by OAuth authentication scheme.
 func SecurityContextByRefreshToken(refreshToken string, cspURL string) (core.SecurityContext, error) {
-	payload := strings.NewReader("refresh_token=" + refreshToken)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
 
-	req, _ := http.NewRequest("POST", cspURL, payload)
+	config := openapiclient.NewConfiguration()
 
-	req.Header.Add("content-type", "application/x-www-form-urlencoded")
+	if len(cspURL) > 0 {
+		config.BasePath = cspURL
+	}
+	config.HTTPClient = &http.Client{Transport: tr}
+	config.AddDefaultHeader("authorization", "Basic"+refreshToken)
 
-	res, err := http.DefaultClient.Do(req)
+	auth := context.WithValue(context.Background(), openapiclient.ContextBasicAuth, openapiclient.APIKey{
+		Key:    refreshToken,
+		Prefix: "Basic",
+	})
 
+	APIClient := openapiclient.NewAPIClient(config)
+	accessToken, resp, err := APIClient.AuthenticationApi.GetAccessTokenByApiRefreshTokenUsingPOST(auth, refreshToken)
+	if resp.StatusCode != 200 {
+		return nil, HandleCreateError("access token using refresh_token", err)
+	}
+	if err != nil {
+		return nil, HandleCreateError("access token using refresh_token", err)
+	}
+
+	securityCtx := security.NewOauthSecurityContext(accessToken.AccessToken)
+	return securityCtx, nil
+}
+
+func NewClientConnectorByClientID(clientID, clientSecret, serviceUrl, cspURL string,
+	httpClient http.Client) (client.Connector, error) {
+
+	if len(serviceUrl) <= 0 {
+		serviceUrl = DefaultVMCServer
+	}
+
+	if len(cspURL) <= 0 {
+		cspURL = DefaultCSPUrl
+	}
+	securityCtx, err := SecurityContextByClientID(clientID, clientSecret, cspURL)
 	if err != nil {
 		return nil, err
 	}
 
-	if res.StatusCode != 200 {
-		b, _ := ioutil.ReadAll(res.Body)
-		return nil, fmt.Errorf("response from Cloud Service Provider contains status code %d : %s", res.StatusCode, string(b))
+	connector := client.NewRestConnector(serviceUrl, httpClient)
+	connector.SetSecurityContext(securityCtx)
+
+	return connector, nil
+}
+
+func SecurityContextByClientID(clientID string, clientSecret string, cspURL string) (core.SecurityContext, error) {
+
+	clientCredentials := clientID + ":" + clientSecret
+
+	encodedClientCredentials := base64.StdEncoding.EncodeToString([]byte(clientCredentials))
+
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
-	defer res.Body.Close()
+	config := openapiclient.NewConfiguration()
+	if len(cspURL) > 0 {
+		config.BasePath = cspURL
+	}
+	config.HTTPClient = &http.Client{Transport: tr}
+	config.AddDefaultHeader("authorization", "Basic"+encodedClientCredentials)
 
-	var jsondata map[string]interface{}
-	json.NewDecoder(res.Body).Decode(&jsondata)
+	auth := context.WithValue(context.Background(), openapiclient.ContextBasicAuth, openapiclient.APIKey{
+		Key:    encodedClientCredentials,
+		Prefix: "Basic",
+	})
 
-	var accessToken string
-	if token, ok := jsondata["access_token"]; ok {
-		if accessTokenStr, ok := token.(string); ok {
-			accessToken = accessTokenStr
-		} else {
-			errMsg := fmt.Sprintf("Invalid type for access_token, expected string, actual %s", reflect.TypeOf(token).String())
-			return nil, errors.New(errMsg)
-		}
-	} else {
-		return nil, errors.New("Cloud Service Provider authentication response does not contain access token")
+	APIClient := openapiclient.NewAPIClient(config)
+
+	accessToken, response, err := APIClient.AuthenticationApi.GetTokenForAuthGrantTypeUsingPOST1(auth, "client_credentials", nil)
+	if response.StatusCode != 200 {
+		return nil, HandleCreateError("access token using refresh_token", err)
+	}
+	if err != nil {
+		return nil, HandleCreateError("access token using client ID and client secret", err)
 	}
 
-	securityCtx := security.NewOauthSecurityContext(accessToken)
+	securityCtx := security.NewOauthSecurityContext(accessToken.AccessToken)
 	return securityCtx, nil
 }

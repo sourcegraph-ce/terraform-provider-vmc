@@ -145,7 +145,7 @@ func resourceSddc() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 				ValidateFunc: validation.StringInSlice(
-					[]string{HostInstancetypeI3, HostInstancetypeR5}, false),
+					[]string{HostInstancetypeI3, HostInstancetypeR5, HostInstancetypeI3EN}, false),
 			},
 			"sddc_state": {
 				Type:     schema.TypeString,
@@ -192,7 +192,13 @@ func resourceSddc() *schema.Resource {
 					return fmt.Errorf("storage_capacity is required for host_instance_type %q", newInstanceType)
 
 				}
+			case HostInstancetypeI3EN:
 
+				if d.Get("storage_capacity").(string) != "" {
+
+					return fmt.Errorf("storage_capacity is not supported for host_instance_type %q", newInstanceType)
+
+				}
 			}
 			return nil
 		},

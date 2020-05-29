@@ -37,6 +37,12 @@ func testAccPreCheck(t *testing.T) {
 	if v := os.Getenv(APIToken); v == "" {
 		t.Fatal(APIToken + " must be set for acceptance tests")
 	}
+	if v := os.Getenv(ClientID); v == "" {
+		t.Fatal(ClientID + " must be set for acceptance tests")
+	}
+	if v := os.Getenv(ClientSecret); v == "" {
+		t.Fatal(ClientSecret + " must be set for acceptance tests")
+	}
 	if v := os.Getenv(OrgID); v == "" {
 		t.Fatal(OrgID + " must be set for acceptance tests")
 	}
