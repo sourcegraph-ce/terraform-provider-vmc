@@ -345,6 +345,7 @@ github.com/ulikunitz/xz v0.5.5/go.mod h1:2bypXElzHzzJZwzH67Y6wb67pO62Rzfn7BSiF4A
 github.com/vmihailenco/msgpack v3.3.3+incompatible/go.mod h1:fy3FlTQTDXWkZ7Bh6AcGMlsjHatGryHQYUTf1ShIgkk=
 github.com/vmihailenco/msgpack v4.0.1+incompatible h1:RMF1enSPeKTlXrXdOcqjFUElywVZjjC6pqse21bKbEU=
 github.com/vmihailenco/msgpack v4.0.1+incompatible/go.mod h1:fy3FlTQTDXWkZ7Bh6AcGMlsjHatGryHQYUTf1ShIgkk=
+github.com/vmware/vsphere-automation-sdk-go v0.0.0-20200625121303-61315b5a8d04 h1:2U3P47wCBCs6w8pgNd3X+Eb+F5zEcAjrJ8cdj8+a3+Q=
 github.com/vmware/vsphere-automation-sdk-go/lib v0.3.1 h1:YIcvcshkKm/fbXOvheGfAlGlDTitQXUSMPnYON/uzyg=
 github.com/vmware/vsphere-automation-sdk-go/lib v0.3.1/go.mod h1:lzuoOgc7zhx3bfrKFRDBbaJX3wj4wSstWv4pTpryhJs=
 github.com/vmware/vsphere-automation-sdk-go/runtime v0.3.1 h1:AhoRilMJ6hZbBDr4J9GSrAVpPBkLlZz8+FS84Pdbhc8=
@@ -353,6 +354,8 @@ github.com/vmware/vsphere-automation-sdk-go/services/nsxt-vmc-aws-integration v0
 github.com/vmware/vsphere-automation-sdk-go/services/nsxt-vmc-aws-integration v0.3.0/go.mod h1:LXS7Ig+8cPcKIzG7I2Ap3yhjuQxlSJxhSF2RhW4BN/k=
 github.com/vmware/vsphere-automation-sdk-go/services/vmc v0.3.0 h1:0CiR1LBgkRKTp62UwcpN6j3EgQMRzMbcHxcABVZXPiU=
 github.com/vmware/vsphere-automation-sdk-go/services/vmc v0.3.0/go.mod h1:JCGbR5OnX1g5Qw8eMQvE6XM8rEC5h388J/TLF8uHbtA=
+github.com/vmware/vsphere-automation-sdk-go/services/vmc/autoscaler v0.1.0 h1:F0bicSJnTruHDnDVcCaT1AxLT0KhhLzWXvpPy6x51S4=
+github.com/vmware/vsphere-automation-sdk-go/services/vmc/autoscaler v0.1.0/go.mod h1:w9oSLHs2n5yoUzcLKLvgxB4I8e4v5MpoktdMuwsVGt0=
 github.com/vmware/vsphere-automation-sdk-go/services/vmc/draas v0.3.0 h1:lZYaWkA4xf2b9mVpTq84nbyKvDrlav4tTIXDZFeoXAA=
 github.com/vmware/vsphere-automation-sdk-go/services/vmc/draas v0.3.0/go.mod h1:Rm/j6/0eyU6CH8efdLLzKl/1yqHQkc+rJsnqVz2luJk=
 github.com/xanzy/ssh-agent v0.2.1/go.mod h1:mLlQY/MoOhWBj+gOGMQkOeiEvkx+8pJSI+0Bx9h2kr4=
