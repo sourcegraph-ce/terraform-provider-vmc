@@ -1,7 +1,7 @@
 package plugin
 
 import (
-	"log"
+	log "github.com/sourcegraph-ce/logrus"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	proto "github.com/hashicorp/terraform/internal/tfplugin5"
