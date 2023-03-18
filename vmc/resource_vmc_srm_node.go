@@ -6,7 +6,7 @@ package vmc
 import (
 	"fmt"
 	"github.com/hashicorp/terraform/helper/validation"
-	"log"
+	log "github.com/sourcegraph-ce/logrus"
 	"strings"
 	"time"
 

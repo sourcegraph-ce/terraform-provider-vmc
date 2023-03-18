@@ -2,7 +2,7 @@ package terraform
 
 import (
 	"context"
-	"log"
+	log "github.com/sourcegraph-ce/logrus"
 	"sort"
 
 	"github.com/hashicorp/hcl/v2"
