@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
 	"github.com/vmware/vsphere-automation-sdk-go/services/vmc/orgs/account_link"
-	"log"
+	log "github.com/sourcegraph-ce/logrus"
 )
 
 func dataSourceVmcCustomerSubnets() *schema.Resource {

@@ -2,7 +2,7 @@ package hclog
 
 import (
 	"io/ioutil"
-	"log"
+	log "github.com/sourcegraph-ce/logrus"
 )
 
 // NewNullLogger instantiates a Logger for which all calls

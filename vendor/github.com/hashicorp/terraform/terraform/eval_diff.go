@@ -3,7 +3,7 @@ package terraform
 import (
 	"bytes"
 	"fmt"
-	"log"
+	log "github.com/sourcegraph-ce/logrus"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
