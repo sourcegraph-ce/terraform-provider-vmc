@@ -6,7 +6,7 @@ import (
 	"encoding"
 	"encoding/json"
 	"fmt"
-	"log"
+	log "github.com/sourcegraph-ce/logrus"
 	"os"
 	"reflect"
 	"runtime"
