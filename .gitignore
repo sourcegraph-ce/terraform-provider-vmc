@@ -10,4 +10,4 @@ terraform.tfstate
 *.bak
 *~
 /*.tf
-.terraform.tfstate.lock.info
+.terraform.tfstate.lock.infochanging_this_one_line_to_create_bc_branch_with_batch_changes
